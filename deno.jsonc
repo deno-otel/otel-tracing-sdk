@@ -1,0 +1,19 @@
+{
+  "tasks": {
+    "test-with-coverage": "rm -rf cov_profile && deno test --coverage=cov_profile && deno coverage cov_profile --lcov --output=cov_profile.lcov && genhtml --branch-coverage -o cov_profile/html cov_profile.lcov"
+  },
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "strictNullChecks": true
+  },
+  "fmt": {
+    "include": ["*.ts"]
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"],
+      "exclude": []
+    },
+    "include": ["*.ts"]
+  }
+}
