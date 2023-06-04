@@ -1,5 +1,9 @@
-import { ContextSpanAccessAPI } from "./deps.ts";
-import { ContextAPI, createContextKey, SpanAPI } from "./deps.ts";
+import {
+  ContextAPI,
+  ContextSpanAccessAPI,
+  createContextKey,
+  SpanAPI,
+} from "./deps.ts";
 
 const SPAN_KEY = createContextKey("Span Key");
 

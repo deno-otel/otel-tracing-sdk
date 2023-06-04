@@ -1,19 +1,21 @@
 import {
+  createSpanContext,
   getEmptyTraceState,
   SpanAPI,
   SpanAttributes,
+  SpanContextAPI,
   SpanEvent,
   SpanKind,
   SpanLink,
   SpanStatus,
   StatusCode,
+  TraceFlags,
 } from "./deps.ts";
-import { SpanContext } from "./span-context.ts";
 
 export class NoOpSpan implements SpanAPI {
   readonly name: string;
-  readonly spanContext: SpanContext;
-  readonly parent: SpanAPI | SpanContext | null;
+  readonly spanContext: SpanContextAPI;
+  readonly parent: SpanAPI | SpanContextAPI | null;
   readonly spanKind: SpanKind.INTERNAL;
   readonly start: number;
   readonly end: number | null;
@@ -21,17 +23,16 @@ export class NoOpSpan implements SpanAPI {
   readonly links: SpanLink[];
   readonly events: SpanEvent[];
   readonly status: SpanStatus;
-  readonly isRecording: boolean;
 
   constructor(traceId: Uint8Array, spanId: Uint8Array) {
     this.name = "";
-    this.spanContext = new SpanContext(
+    this.spanContext = createSpanContext({
       traceId,
       spanId,
-      0,
-      getEmptyTraceState(),
-      false,
-    );
+      traceFlags: TraceFlags.NONE,
+      traceState: getEmptyTraceState(),
+      isRemote: false,
+    });
 
     this.parent = null;
     this.spanKind = SpanKind.INTERNAL;
@@ -41,10 +42,12 @@ export class NoOpSpan implements SpanAPI {
     this.links = [];
     this.events = [];
     this.status = { code: StatusCode.UNSET };
-    this.isRecording = false;
   }
 
-  getSpanContext(): SpanContext {
+  isRecording(): boolean {
+    return false;
+  }
+  getSpanContext(): SpanContextAPI {
     return this.spanContext;
   }
   setAttribute(): void {}

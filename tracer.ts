@@ -1,6 +1,8 @@
 import { getSpan } from "./context.ts";
 import {
   ContextAPI,
+  createSpanContext,
+  getSpanContext,
   SpanAPI,
   SpanAttributes,
   SpanKind,
@@ -11,7 +13,6 @@ import {
 import { NoOpSpan } from "./no-op-span.ts";
 import { NonRecordingSpan } from "./non-recording-span.ts";
 import { Decision } from "./samplers/sampler.ts";
-import { getSpanContext, SpanContext } from "./span-context.ts";
 import { Span, SpanCreationParams } from "./span.ts";
 import { TracerProvider } from "./tracer-provider.ts";
 
@@ -62,33 +63,26 @@ export class Tracer implements TracerAPI {
       attributes,
     });
     const spanId = this.provider.idGenerator.generateSpanIdBytes();
+    const newSpanContext = createSpanContext({
+      traceId,
+      spanId,
+      traceFlags: shouldSample.decision === Decision.RECORD_AND_SAMPLE
+        ? TraceFlags.SAMPLED
+        : TraceFlags.NONE,
+      traceState: shouldSample.traceState,
+      isRemote: false,
+    });
     if (shouldSample.decision === Decision.DROP) {
-      const newSpanContext = new SpanContext(
-        traceId,
-        spanId,
-        0,
-        shouldSample.traceState,
-        false,
-      );
       return NonRecordingSpan.fromSpanContext(
         newSpanContext,
         shouldSample.attributes,
       );
     } else {
-      const newSpanContext = new SpanContext(
-        traceId,
-        spanId,
-        shouldSample.decision === Decision.RECORD_AND_SAMPLE
-          ? TraceFlags.SAMPLED
-          : TraceFlags.NONE,
-        shouldSample.traceState,
-        false,
-      );
       return new Span(
         {
           name: spanName,
           kind,
-          attributes,
+          attributes: shouldSample.attributes ?? new SpanAttributes(),
           links,
           start: startTime,
           parent: parentSpan === null ? undefined : parentSpan,

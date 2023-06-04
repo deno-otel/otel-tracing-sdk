@@ -20,7 +20,6 @@ export class NonRecordingSpan implements SpanAPI {
   readonly links: SpanLink[];
   readonly events: SpanEvent[];
   readonly status: SpanStatus;
-  readonly isRecording: boolean;
 
   private constructor(spanContext: SpanContextAPI, attributes: SpanAttributes) {
     this.name = "";
@@ -33,7 +32,6 @@ export class NonRecordingSpan implements SpanAPI {
     this.links = [];
     this.events = [];
     this.status = { code: StatusCode.UNSET };
-    this.isRecording = false;
   }
 
   static fromSpanContext(
@@ -57,4 +55,7 @@ export class NonRecordingSpan implements SpanAPI {
   setStatus(): void {}
   updateName(): void {}
   endSpan(): void {}
+  isRecording(): boolean {
+    return false;
+  }
 }
