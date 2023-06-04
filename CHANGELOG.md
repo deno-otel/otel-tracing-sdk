@@ -1,3 +1,9 @@
+## v1.0.1 (2023-06-04)
+
+### Refactor
+
+- **ExportResult**: remove SDK definition and use API definition of ExportResult
+
 ## v1.0.0 (2023-06-04)
 
 ### BREAKING CHANGE
