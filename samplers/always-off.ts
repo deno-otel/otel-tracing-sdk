@@ -1,4 +1,4 @@
-import { getSpan } from "https://deno.land/x/otel_tracing_api@v0.0.3/context.ts";
+import { getSpan } from "../context.ts";
 import { getEmptyTraceState } from "../deps.ts";
 import {
   Decision,

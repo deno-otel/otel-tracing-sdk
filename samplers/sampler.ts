@@ -1,9 +1,9 @@
 import {
-  AttributeCollection,
-  TraceState,
   ContextAPI,
+  SpanAttributes,
   SpanKind,
   SpanLink,
+  TraceState,
 } from "../deps.ts";
 
 export enum Decision {
@@ -16,13 +16,13 @@ export interface SamplingParameters {
   context: ContextAPI;
   traceId: Uint8Array;
   spanKind: SpanKind;
-  attributes: AttributeCollection;
+  attributes: SpanAttributes;
   links: SpanLink[];
 }
 
 export interface SamplingResult {
   decision: Decision;
-  attributes: AttributeCollection | null;
+  attributes: SpanAttributes | null;
   traceState: TraceState;
 }
 
