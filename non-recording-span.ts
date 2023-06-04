@@ -1,18 +1,18 @@
 import {
   SpanAPI,
   SpanAttributes,
+  SpanContextAPI,
   SpanEvent,
   SpanKind,
   SpanLink,
   SpanStatus,
   StatusCode,
 } from "./deps.ts";
-import { SpanContext } from "./span-context.ts";
 
 export class NonRecordingSpan implements SpanAPI {
   readonly name: string;
-  readonly spanContext: SpanContext;
-  readonly parent: SpanAPI | SpanContext | null;
+  readonly spanContext: SpanContextAPI;
+  readonly parent: SpanAPI | SpanContextAPI | null;
   readonly spanKind: SpanKind.INTERNAL;
   readonly start: number;
   readonly end: number | null;
@@ -22,7 +22,7 @@ export class NonRecordingSpan implements SpanAPI {
   readonly status: SpanStatus;
   readonly isRecording: boolean;
 
-  private constructor(spanContext: SpanContext, attributes: SpanAttributes) {
+  private constructor(spanContext: SpanContextAPI, attributes: SpanAttributes) {
     this.name = "";
     this.spanContext = spanContext;
     this.parent = null;
@@ -37,16 +37,16 @@ export class NonRecordingSpan implements SpanAPI {
   }
 
   static fromSpanContext(
-    spanContext: SpanContext,
-    attributes?: SpanAttributes | null
+    spanContext: SpanContextAPI,
+    attributes?: SpanAttributes | null,
   ): NonRecordingSpan {
     return new NonRecordingSpan(
       spanContext,
-      attributes ?? new SpanAttributes()
+      attributes ?? new SpanAttributes(),
     );
   }
 
-  getSpanContext(): SpanContext {
+  getSpanContext(): SpanContextAPI {
     return this.spanContext;
   }
   setAttribute(): void {}
