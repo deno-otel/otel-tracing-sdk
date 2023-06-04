@@ -12,7 +12,6 @@ import {
   StatusCode,
   Timestamp,
 } from "./deps.ts";
-import { SpanContext } from "./span-context.ts";
 
 export interface SpanCreationParams {
   kind?: SpanKind;
@@ -41,7 +40,7 @@ export class Span implements SpanAPI {
   links: SpanLink[];
   events: SpanEvent[];
   status: SpanStatus;
-  isRecording: boolean;
+  private _isRecording: boolean;
 
   constructor(
     properties: SpanConstructorProperties,
@@ -63,13 +62,13 @@ export class Span implements SpanAPI {
     this.links = links;
     this.events = [];
     this.status = { code: StatusCode.UNSET };
-    this.isRecording = true;
+    this._isRecording = true;
 
     this.parent = properties.parent ?? null;
     this.spanContext = spanContext;
   }
 
-  getSpanContext(): SpanContext {
+  getSpanContext(): SpanContextAPI {
     return this.spanContext;
   }
 
@@ -81,7 +80,10 @@ export class Span implements SpanAPI {
     this.attributes.addAttributes(attributes);
   }
 
-  addLink(spanContext: SpanContext, attributes = new LinkAttributes()): void {
+  addLink(
+    spanContext: SpanContextAPI,
+    attributes = new LinkAttributes(),
+  ): void {
     this.links.push({ spanContext, attributes });
     throw new Error("Method not implemented.");
   }
@@ -121,6 +123,10 @@ export class Span implements SpanAPI {
 
   endSpan(endTime?: number | undefined): void {
     this.end = endTime ?? Date.now();
-    this.isRecording = false;
+    this._isRecording = false;
+  }
+
+  isRecording(): boolean {
+    return this._isRecording;
   }
 }
