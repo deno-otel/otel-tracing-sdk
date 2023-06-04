@@ -45,7 +45,7 @@ export class Span implements SpanAPI {
 
   constructor(
     properties: SpanConstructorProperties,
-    spanContext: SpanContextAPI
+    spanContext: SpanContextAPI,
   ) {
     const {
       name,
@@ -89,7 +89,7 @@ export class Span implements SpanAPI {
   addEvent(
     name: string,
     eventTime: Timestamp = Date.now(),
-    attributes = new EventAttributes()
+    attributes = new EventAttributes(),
   ): void {
     this.events.push({ name, eventTime, attributes });
   }

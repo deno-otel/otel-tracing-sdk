@@ -1,5 +1,5 @@
 import { ContextSpanAccessAPI } from "./deps.ts";
-import { SpanAPI, ContextAPI, createContextKey } from "./deps.ts";
+import { ContextAPI, createContextKey, SpanAPI } from "./deps.ts";
 
 const SPAN_KEY = createContextKey("Span Key");
 
@@ -7,7 +7,7 @@ const SPAN_KEY = createContextKey("Span Key");
  * Extract the current Span from the current Context
  */
 export const getSpan: ContextSpanAccessAPI["extractSpan"] = (
-  context: ContextAPI
+  context: ContextAPI,
 ): SpanAPI | null => {
   return (context.getValue(SPAN_KEY) as SpanAPI) ?? null;
 };
@@ -17,7 +17,7 @@ export const getSpan: ContextSpanAccessAPI["extractSpan"] = (
  */
 export const addSpan: ContextSpanAccessAPI["injectSpan"] = (
   context: ContextAPI,
-  span: SpanAPI
+  span: SpanAPI,
 ) => {
   return context.setValue(SPAN_KEY, span);
 };

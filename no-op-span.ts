@@ -1,4 +1,5 @@
 import {
+  getEmptyTraceState,
   SpanAPI,
   SpanAttributes,
   SpanEvent,
@@ -6,7 +7,6 @@ import {
   SpanLink,
   SpanStatus,
   StatusCode,
-  getEmptyTraceState,
 } from "./deps.ts";
 import { SpanContext } from "./span-context.ts";
 
@@ -30,7 +30,7 @@ export class NoOpSpan implements SpanAPI {
       spanId,
       0,
       getEmptyTraceState(),
-      false
+      false,
     );
 
     this.parent = null;
