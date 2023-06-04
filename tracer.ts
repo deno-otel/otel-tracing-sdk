@@ -1,37 +1,31 @@
 import { getSpan } from "./context.ts";
 import {
-  AttributeCollection,
   ContextAPI,
   SpanAPI,
   SpanAttributes,
   SpanKind,
   TraceFlags,
   TracerAPI,
+  TracerOptions,
 } from "./deps.ts";
 import { NoOpSpan } from "./no-op-span.ts";
 import { NonRecordingSpan } from "./non-recording-span.ts";
 import { Decision } from "./samplers/sampler.ts";
-import { SpanContext, getSpanContext } from "./span-context.ts";
+import { getSpanContext, SpanContext } from "./span-context.ts";
 import { Span, SpanCreationParams } from "./span.ts";
 import { TracerProvider } from "./tracer-provider.ts";
-
-export interface TracerOptions {
-  version?: string;
-  schema_url?: string;
-  attributes?: AttributeCollection;
-}
 
 export class Tracer implements TracerAPI {
   constructor(
     public readonly name: string,
     private options: TracerOptions,
-    private provider: TracerProvider
+    private provider: TracerProvider,
   ) {}
 
   createSpan(
     spanName: string,
     parentContext: ContextAPI | null,
-    params: SpanCreationParams = {}
+    params: SpanCreationParams = {},
   ): SpanAPI {
     const {
       kind = SpanKind.INTERNAL,
@@ -43,7 +37,7 @@ export class Tracer implements TracerAPI {
     if (parentContext === null) {
       return new NoOpSpan(
         this.provider.idGenerator.generateTraceIdBytes(),
-        this.provider.idGenerator.generateSpanIdBytes()
+        this.provider.idGenerator.generateSpanIdBytes(),
       );
     }
 
@@ -74,11 +68,11 @@ export class Tracer implements TracerAPI {
         spanId,
         0,
         shouldSample.traceState,
-        false
+        false,
       );
       return NonRecordingSpan.fromSpanContext(
         newSpanContext,
-        shouldSample.attributes
+        shouldSample.attributes,
       );
     } else {
       const newSpanContext = new SpanContext(
@@ -88,7 +82,7 @@ export class Tracer implements TracerAPI {
           ? TraceFlags.SAMPLED
           : TraceFlags.NONE,
         shouldSample.traceState,
-        false
+        false,
       );
       return new Span(
         {
@@ -99,7 +93,7 @@ export class Tracer implements TracerAPI {
           start: startTime,
           parent: parentSpan === null ? undefined : parentSpan,
         },
-        newSpanContext
+        newSpanContext,
       );
     }
   }
