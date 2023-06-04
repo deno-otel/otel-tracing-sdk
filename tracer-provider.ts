@@ -54,7 +54,7 @@ export class TracerProvider implements TracerProviderAPI {
 
   getTracer(name: string, options: TracerOptions = {}): TracerAPI {
     if (this.isShutdown) {
-      return new NoOpTracer();
+      return new NoOpTracer(this);
     }
     const tracerKey = [
       name,
@@ -74,7 +74,9 @@ export class TracerProvider implements TracerProviderAPI {
     }
 
     await Promise.all(
-      this.configuration.spanProcessors.map((processor) => processor.shutdown())
+      this.configuration.spanProcessors.map((processor) =>
+        processor.shutdown()
+      ),
     );
 
     this.isShutdown = true;
@@ -88,7 +90,7 @@ export class TracerProvider implements TracerProviderAPI {
     await Promise.all(
       this.configuration.spanProcessors.map((processor) =>
         processor.forceFlush()
-      )
+      ),
     );
   }
 }

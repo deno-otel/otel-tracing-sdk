@@ -1,20 +1,14 @@
-import { Span, SpanCreationParams } from "./span.ts";
-import { getSpan } from "./context.ts";
-import {
-  AttributeCollection,
-  ContextAPI,
-  SpanAPI,
-  SpanAttributes,
-  SpanKind,
-  TracerAPI,
-} from "./deps.ts";
+import { SpanAPI, TracerAPI } from "./deps.ts";
 import { NoOpSpan } from "./no-op-span.ts";
+import { TracerProvider } from "./tracer-provider.ts";
 
 export class NoOpTracer implements TracerAPI {
   name = "NoOpTracer";
-  constructor() {}
+  constructor(private provider: TracerProvider) {}
 
   createSpan(): SpanAPI {
-    return new NoOpSpan();
+    const traceId = this.provider.idGenerator.generateTraceIdBytes();
+    const spanId = this.provider.idGenerator.generateSpanIdBytes();
+    return new NoOpSpan(traceId, spanId);
   }
 }
