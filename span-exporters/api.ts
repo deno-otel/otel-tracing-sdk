@@ -1,11 +1,6 @@
-import { SpanAPI } from "../deps.ts";
+import { ExportResult, Exporter, SpanAPI } from "../deps.ts";
 
-export enum ExportResult {
-  SUCCESS,
-  FAILUER,
-}
-
-export interface SpanExporterAPI {
+export interface SpanExporterAPI extends Exporter<SpanAPI> {
   export(spans: SpanAPI[]): Promise<ExportResult>;
   shutdown(): Promise<void>;
   forceFlush(): Promise<void>;

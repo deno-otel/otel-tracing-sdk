@@ -1,5 +1,5 @@
-import { SpanAPI } from "../deps.ts";
-import { ExportResult, SpanExporterAPI } from "../span-exporters/api.ts";
+import { ExportResult, SpanAPI } from "../deps.ts";
+import { SpanExporterAPI } from "../span-exporters/api.ts";
 import { SpanProcessorAPI } from "./api.ts";
 
 interface Configuration {
